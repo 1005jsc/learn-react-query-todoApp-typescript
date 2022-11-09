@@ -3,60 +3,27 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { TodoType } from '../../types/types';
+import useForm from './useForm';
 
 type FormProps = {};
 
 const Form = ({}: FormProps) => {
-  const [content, setContent] = useState<string | undefined>('');
-  const [title, setTitle] = useState<string | undefined>('');
-  const queryClient = useQueryClient();
-  const { mutate: submitMutate } = useMutation(
-    async (newTodo: TodoType) => {
-      console.log(newTodo);
-      const response = await axios.post(`http://localhost:3001/todos`, newTodo);
-      return response;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('getTodos');
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    }
-  );
-
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    const newTodo: TodoType = {
-      id: Date.now(),
-      title: title,
-      content: content,
-      isDone: false,
-    };
-
-    submitMutate(newTodo);
-
-    setTitle('');
-    setContent('');
-  };
-
-  const handleChange1: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setTitle(e.target.value);
-  };
-
-  const handleChange2: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setContent(e.target.value);
-  };
+  const {
+    content,
+    title,
+    handleSubmit,
+    handleTitleChange,
+    handleContentChange,
+  } = useForm();
 
   return (
     <FormDiv onSubmit={handleSubmit}>
       <FormSmallDiv>
         <FormLabel>제목</FormLabel>
 
-        <FormInput onChange={handleChange1} type='text' value={title} />
+        <FormInput onChange={handleTitleChange} type='text' value={title} />
         <FormLabel>내용</FormLabel>
-        <FormInput onChange={handleChange2} type='text' value={content} />
+        <FormInput onChange={handleContentChange} type='text' value={content} />
       </FormSmallDiv>
       <FormButton>추가하기</FormButton>
     </FormDiv>
