@@ -22,11 +22,11 @@ css : styled-components
 
 1. useQuery
 
-- List.tsx
+   - List.tsx
 
-2.  useMutation
+2. useMutation
 
-- List.tsx, useForm.tsx
+   - List.tsx, useForm.tsx
 
 3. invalidQueries
 
@@ -34,7 +34,7 @@ css : styled-components
 
 4. mutate
 
-- List.tsx
+   - List.tsx
 
 5. 이미 한번 요청했던 값을 다른 컴포넌트에서 받아보기
    - TodoPage.tsx
