@@ -15,4 +15,26 @@
 ### 기타:
 
 서버 : json-server
+서버 명령어 : yarn json-server --watch db.json --port 3001
 css : styled-components
+
+## 내용
+
+1. useQuery
+
+- List.tsx
+
+2.  useMutation
+
+- List.tsx, useForm.tsx
+
+3. invalidQueries
+
+   - List.tsx
+
+4. mutate
+
+- List.tsx
+
+5. 이미 한번 요청했던 값을 다른 컴포넌트에서 받아보기
+   - TodoPage.tsx

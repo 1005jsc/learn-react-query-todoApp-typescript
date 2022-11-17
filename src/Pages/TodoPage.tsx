@@ -12,8 +12,21 @@ const TodoPage = ({}: TodoPageProps) => {
   const param_id = searchParams.get('id');
   const navigate = useNavigate();
 
+  // 5. 이미 한번 요청했던 값을 다른 컴포넌트에서 받아보기
+  // List.tsx에서 요청했던 'getTodos'를
+  // 전혀 다른 컴포넌트인 'TodoPage'에서 받아보기
+
+  // useQuery에 확인하고 싶은 key값을 넣어주면 된다
+  // 이 경우엔 'getTodos'를 넣어보았다 (List.tsx에서 요청한 적이 있다)
+  // react-query도 다른 상태관리 라이브러리 처럼 state를 전역적으로 관리하고 있기 때문이다
+
+  const { data: datayo } = useQuery('getTodos');
+  console.log(datayo);
+
   const { data, status, isLoading } = useQuery('getTodo', async () => {
-    const response = await axios.get(`http://localhost:3001/todos/${param_id}`);
+    const response = await axios.get(
+      `${process.env.REACT_APP_SERVER_URL}/todos/${param_id}`
+    );
     return response;
   });
 

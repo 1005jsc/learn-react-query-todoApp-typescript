@@ -12,7 +12,10 @@ const useForm = () => {
   const { mutate: submitMutate } = useMutation(
     async (newTodo: TodoType) => {
       console.log(newTodo);
-      const response = await axios.post(`http://localhost:3001/todos`, newTodo);
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/todos`,
+        newTodo
+      );
       return response;
     },
     {
@@ -53,7 +56,6 @@ const useForm = () => {
   return {
     content,
     title,
-
     handleSubmit,
     handleTitleChange,
     handleContentChange,

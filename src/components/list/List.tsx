@@ -15,7 +15,9 @@ const List = ({}: ListProps) => {
   // 값으로 data, status, isLoading, error같은 값들을 받아올 수 있다
 
   const { data, status, isLoading } = useQuery('getTodos', async () => {
-    const response = await axios.get('http://localhost:3001/todos');
+    const response = await axios.get(
+      `${process.env.REACT_APP_SERVER_URL}/todos`
+    );
     return response;
   });
 
@@ -32,7 +34,9 @@ const List = ({}: ListProps) => {
 
   const { mutate: deleteMutate } = useMutation(
     async (id: number) => {
-      const response = await axios.delete(`http://localhost:3001/todos/${id}`);
+      const response = await axios.delete(
+        `${process.env.REACT_APP_SERVER_URL}/todos/${id}`
+      );
       return response;
     },
     {
@@ -59,7 +63,7 @@ const List = ({}: ListProps) => {
   const { mutate: toggleMutate } = useMutation(
     async (todo: TodoType) => {
       const response = await axios.put(
-        `http://localhost:3001/todos/${todo.id}`,
+        `${process.env.REACT_APP_SERVER_URL}/todos/${todo.id}`,
         todo
       );
       return response;
