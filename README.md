@@ -20,6 +20,8 @@ css : styled-components
 
 ## 내용
 
+각 설명은 해당 컴포넌트 파일의 주석으로 적어 놓았습니다
+
 1. useQuery
 
    - List.tsx
