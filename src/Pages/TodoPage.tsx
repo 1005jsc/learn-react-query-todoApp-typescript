@@ -1,8 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useGetQueryData } from '../hooks/ReactQueryHooks/ReactQueryHooks';
 import { TodoType } from '../types/types';
 type TodoPageProps = {};
 
@@ -20,8 +21,23 @@ const TodoPage = ({}: TodoPageProps) => {
   // 이 경우엔 'getTodos'를 넣어보았다 (List.tsx에서 요청한 적이 있다)
   // react-query도 다른 상태관리 라이브러리 처럼 state를 전역적으로 관리하고 있기 때문이다
 
-  const { data: datayo } = useQuery('getTodos');
-  console.log(datayo);
+  // const { data: datayo } = useQuery('getTodos');
+  // console.log(datayo);
+
+  // 6. getQueryData()
+
+  // 이미 useQuery로 받은 데이터는 key값만 적어주면 getQueryData로 받아올 수 있다
+
+  // useQueryClient
+  // https://stackoverflow.com/questions/67091583/react-query-how-can-i-access-my-queries-in-multiple-components
+
+  // const queryClient = useQueryClient();
+
+  // const yo = queryClient.getQueryData('getTodos');
+
+  const yo = useGetQueryData('getTodo');
+
+  console.log(yo);
 
   const { data, status, isLoading } = useQuery('getTodo', async () => {
     const response = await axios.get(

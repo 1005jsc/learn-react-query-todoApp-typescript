@@ -39,4 +39,13 @@ css : styled-components
    - List.tsx
 
 5. 이미 한번 요청했던 값을 다른 컴포넌트에서 받아보기
+
    - TodoPage.tsx
+
+6. getQueryData
+
+   - TodoPage.tsx, ReactQueryHooks.ts
+
+7. 자주쓰는 useQueryClient api들을 hooks로 정리하기
+
+   - ReactQueryHooks.ts
