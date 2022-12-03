@@ -13,6 +13,6 @@ export const useGetQueryData = (key: string | any[]) => {
 export const useRefetchQueries = (key: string | any[]) => {
   return useQueryClient().refetchQueries(key);
 };
-export const useinvalidQueries = (key: string | any[]) => {
+export const useInvalidQueries = (key: string | any[]) => {
   return useQueryClient().invalidateQueries(key);
 };

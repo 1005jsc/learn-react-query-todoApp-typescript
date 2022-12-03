@@ -10,7 +10,7 @@
       "id": 3,
       "title": "아이유",
       "content": "나는 아이유입니다",
-      "isDone": true
+      "isDone": false
     },
     {
       "id": 1667956678476,
@@ -42,6 +42,14 @@
       "id": 3,
       "title": "아이유",
       "content": "나는 아이유입니다",
+      "isDone": true
+    }
+  ],
+  "secret_todos": [
+    {
+      "id": 1668794334223,
+      "title": "내 비밀번호",
+      "content": "비밀번호 : 123123",
       "isDone": true
     }
   ]

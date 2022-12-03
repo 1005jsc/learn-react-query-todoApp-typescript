@@ -1,22 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
-import { TodoType } from '../../types/types';
+import { TodoType, TypeOfTodo } from '../../types/types';
 
 type TodoProps = {
+  typeOfTodo: TypeOfTodo;
   todo: TodoType;
   handleDelete: (id: number) => void;
   handleToggle: (id: number) => void;
 };
 
-const Todo = ({ todo, handleDelete, handleToggle }: TodoProps) => {
+const Todo = ({ todo, handleDelete, handleToggle, typeOfTodo }: TodoProps) => {
   const { id, title, content, isDone } = todo;
   const navigate = useNavigate();
   const handleDeleteYo = () => {
+    if (typeOfTodo === 'secret') {
+      console.log('시크릿 투두는 삭제하기 안됨');
+      return;
+    }
     handleDelete(id);
   };
 
   const handleToggleYo = () => {
+    if (typeOfTodo === 'secret') {
+      console.log('시크릿 투두는 취소하기 안됨');
+      return;
+    }
     handleToggle(id);
   };
 

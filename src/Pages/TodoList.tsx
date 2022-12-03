@@ -28,4 +28,5 @@ const LayoutDiv = styled.section`
   min-height: 800px;
   max-height: 1200px;
   padding: 0 16rem;
+  padding-bottom: 30rem;
 `;

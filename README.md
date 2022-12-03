@@ -49,3 +49,7 @@ css : styled-components
 7. 자주쓰는 useQueryClient api들을 hooks로 정리하기
 
    - ReactQueryHooks.ts
+
+8. enabled: false, refetch로 useQuery 작동을 수동적으로 관리하기
+
+   - List.tsx

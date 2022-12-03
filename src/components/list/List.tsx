@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Todo from '../todo/Todo';
 import styled from 'styled-components';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
@@ -14,11 +14,15 @@ const List = ({}: ListProps) => {
   // 두번째 인자로 서버로 get요청을 하는 비동기 함수를 준다
   // 값으로 data, status, isLoading, error같은 값들을 받아올 수 있다
 
-  const { data, status, isLoading } = useQuery('getTodos', async () => {
+  const {
+    data: todos,
+    status,
+    isLoading,
+  } = useQuery<TodoType[]>('getTodos', async () => {
     const response = await axios.get(
       `${process.env.REACT_APP_SERVER_URL}/todos`
     );
-    return response;
+    return response.data;
   });
 
   // 2. useMutation
@@ -79,8 +83,8 @@ const List = ({}: ListProps) => {
     }
   );
 
-  let todos: TodoType[] = [];
-  if (status === 'success') todos = data.data;
+  // let todos: TodoType[] = [];
+  // if (status === 'success') todos = data.data;
 
   // 4. mutate
 
@@ -93,37 +97,103 @@ const List = ({}: ListProps) => {
   };
 
   const handleToggle = (id: number) => {
+    if (!todos) return;
+
     const yes = todos.filter((value) => value.id === id); // 버튼을 누른 객체
     const yes3 = { ...yes[0], isDone: !yes[0].isDone }; // 버튼을 누른 객체의 isDone값을 !
 
     toggleMutate(yes3);
   };
 
+  // 8. enabled: false, refetch로 useQuery 작동을 수동적으로 관리하기
+  // useQuery는 hook이기 때문에 컴포넌트 내의 함수로 들어 가거나 useEffect안에 들어갈 수 없다
+  // 그래서 아무 옵션 없이 useQuery를 컴포넌트 상단에 정의를 해주면
+  // 컴포넌트가 update될때마다 실행되어지게 된다 get요청이 불필요할때에도 useQuery가 실행될 수 있다는 이야기이다
+  // 또, 버튼 클릭과 같은 특정 이벤트가 실행될 경우에만 useQuery를 통한 get요청을 하고 싶을 경우도 있을 것이다
+  // 이런 경우에는 ...
+
+  // (1) 옵션자리(useQuery의 세번째 param자리)에 enable: false옵션을 추가해준다
+  // enabled: false -> 자동요청을 끄고 수동 요청에만 useQuery가 실행될수 있도록 한다
+
+  // (2) useQuery가 리턴하는 api 중 refetch함수를 이용한다
+  // 여기에서는 refetch함수를 secretTodosFetch라고 정의하고,
+  // get요청을 일으키고 싶은 곳에 secretTodosFetch를 호출해주면 된다
+  // 그렇게 되면 원하는 곳에 원하는 시점에 useQuery를 컨트롤 할 수 있게 된다
+
+  const { data: secretTodos, refetch: secretTodosFetch } = useQuery<TodoType[]>(
+    'getSecretTodos',
+    async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/secret_todos`
+      );
+      return response.data;
+    },
+    {
+      // 기본값: 브라우저 화면을 재방문시 useQuery다시 요청함 -> 요청 안함
+      refetchOnWindowFocus: false,
+      // 8 - (1) : useQuery의 동작을 수동으로 바꿈
+      enabled: false,
+      // 기본값: retry를 3번까지 다시 요청 -> 다시요청 안함
+      retry: 0,
+      onSuccess: () => {},
+      onError: () => {},
+    }
+  );
+
+  const [secretTodosToggle, setSecretTodosToggle] = useState<boolean>(false);
+  const handleSecretClick = () => {
+    if (!secretTodosToggle) {
+      // 8 - (2) 의 내용: secretTodosFetch 호출하기
+      secretTodosFetch();
+    }
+    setSecretTodosToggle(!secretTodosToggle);
+  };
+
   return (
     <ListDiv>
       <ListH1>Working.. 🔥</ListH1>
 
-      {todos
-        .filter((todo) => todo.isDone === false)
-        .map((val, index) => {
-          return (
-            <Todo
-              key={index}
-              todo={val}
-              handleDelete={handleDelete}
-              handleToggle={handleToggle}
-            />
-          );
-        })}
+      {todos &&
+        todos
+          .filter((todo) => todo.isDone === false)
+          .map((val, index) => {
+            return (
+              <Todo
+                typeOfTodo='normal'
+                key={val.id}
+                todo={val}
+                handleDelete={handleDelete}
+                handleToggle={handleToggle}
+              />
+            );
+          })}
 
       <ListH1>Done..! 🎉</ListH1>
 
-      {todos
-        .filter((todo) => todo.isDone === true)
-        .map((val, index) => {
+      {todos &&
+        todos
+          .filter((todo) => todo.isDone === true)
+          .map((val, index) => {
+            return (
+              <Todo
+                typeOfTodo='normal'
+                key={val.id}
+                todo={val}
+                handleDelete={handleDelete}
+                handleToggle={handleToggle}
+              />
+            );
+          })}
+
+      <ListH1 onClick={handleSecretClick}>Secret Todos.. 🕶 </ListH1>
+
+      {secretTodosToggle &&
+        secretTodos &&
+        secretTodos.map((val, index) => {
           return (
             <Todo
-              key={index}
+              typeOfTodo='secret'
+              key={val.id}
               todo={val}
               handleDelete={handleDelete}
               handleToggle={handleToggle}
