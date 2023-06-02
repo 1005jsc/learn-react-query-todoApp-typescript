@@ -1,9 +1,9 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import Todo from '../todo/Todo';
-import styled from 'styled-components';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
-import { TodoType } from '../../types/types';
+import React, { ReactNode, useEffect, useState } from "react";
+import Todo from "../todo/Todo";
+import styled from "styled-components";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { TodoType } from "../../types/types";
 
 type ListProps = {};
 
@@ -14,16 +14,30 @@ const List = ({}: ListProps) => {
   // 두번째 인자로 서버로 get요청을 하는 비동기 함수를 준다
   // 값으로 data, status, isLoading, error같은 값들을 받아올 수 있다
 
-  const {
-    data: todos,
-    status,
-    isLoading,
-  } = useQuery<TodoType[]>('getTodos', async () => {
+  const { data: todos } = useQuery<TodoType[]>("getTodos", async () => {
     const response = await axios.get(
       `${process.env.REACT_APP_SERVER_URL}/todos`
     );
     return response.data;
   });
+
+  // 9. useQuery를 동적으로 받기
+  // useQuery로 GET 해올 때 요청하는 값이 동적으로 바뀌는 경우가 있을 수 있다
+  // 이럴 떄 보통 2가지 방법이 있다
+  // 1. 바뀌어야 할 변수를 useState로 관리, state가 바뀌고 나서 수동으로 refetch를 한다
+  // 2. queryKey를 배열로 만들고 두번째 인자에 변수를 넣는다. state변수의 값이 바뀌면
+  //     key가 바뀌는 것이기때문에 useQuery가 refetch된다. 한마디로 자동으로 refetch를 함
+  //     queryKey[1]와 같이 변수 값을 받아 올 수 있음
+
+  const [page, setPage] = useState(2);
+
+  const fetchCharacters = async ({ queryKey }: any) => {
+    const response = await fetch(
+      `https://rickandmortyapi.com/api/character?page=${queryKey[1]}`
+    );
+    return response.json();
+  };
+  const { data, status } = useQuery(["characters", page], fetchCharacters);
 
   // 2. useMutation
   // 'get'인 경우에는 useQuery를 쓰지만,
@@ -45,7 +59,7 @@ const List = ({}: ListProps) => {
     },
     {
       onSuccess: () => {
-        console.log('success');
+        console.log("success");
 
         // 3. invalidQueries
         // 이걸 적어주지 않으면
@@ -56,10 +70,10 @@ const List = ({}: ListProps) => {
         // 이해를 돕기 위해서 invalidateQueries를 넣어서 실행도 해보고 주석으로 없애서 실행도 해보면
         // 어떤 쓰임인줄 알 수 있을 것이다
 
-        queryClient.invalidateQueries('getTodos');
+        queryClient.invalidateQueries("getTodos");
       },
       onError: () => {
-        console.log('이런 ㅜㅜ 에러가 떳군요, 어서 코드를 확인해보셔요');
+        console.log("이런 ㅜㅜ 에러가 떳군요, 어서 코드를 확인해보셔요");
       },
     }
   );
@@ -74,11 +88,11 @@ const List = ({}: ListProps) => {
     },
     {
       onSuccess: () => {
-        console.log('success');
-        queryClient.invalidateQueries('getTodos');
+        console.log("success");
+        queryClient.invalidateQueries("getTodos");
       },
       onError: () => {
-        console.log('이런 ㅜㅜ 에러가 떳군요, 어서 코드를 확인해보셔요');
+        console.log("이런 ㅜㅜ 에러가 떳군요, 어서 코드를 확인해보셔요");
       },
     }
   );
@@ -121,7 +135,7 @@ const List = ({}: ListProps) => {
   // 그렇게 되면 원하는 곳에 원하는 시점에 useQuery를 컨트롤 할 수 있게 된다
 
   const { data: secretTodos, refetch: secretTodosFetch } = useQuery<TodoType[]>(
-    'getSecretTodos',
+    "getSecretTodos",
     async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_SERVER_URL}/secret_todos`
@@ -151,6 +165,8 @@ const List = ({}: ListProps) => {
 
   return (
     <ListDiv>
+      <div></div>
+
       <ListH1>Working.. 🔥</ListH1>
 
       {todos &&

@@ -53,3 +53,7 @@ css : styled-components
 8. enabled: false, refetch로 useQuery 작동을 수동적으로 관리하기
 
    - List.tsx
+
+9. useQuery로 동적 데이터 받아오기
+
+   - List.tsx
